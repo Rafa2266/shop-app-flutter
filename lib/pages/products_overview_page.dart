@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/component/bag.dart';
 import 'package:shop/component/product_grid.dart';
-import 'package:shop/models/product_list.dart';
+import 'package:shop/models/cart.dart';
+import 'package:shop/utils/app_routes.dart';
 
 enum FilterOptions { Favorite, All }
 
@@ -41,6 +43,18 @@ class _ProductsOverViewPageState extends State<ProductsOverViewPage> {
                 }
               });
             },
+          ),
+          Consumer<Cart>(
+            child: IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(AppRoutes.CART);
+              },
+              icon: const Icon(Icons.shopping_cart),
+            ),
+            builder: (ctx, cart, child) => Bag(
+              value: cart.itemsCount.toString(),
+              child: child!,
+            ),
           )
         ],
       ),
