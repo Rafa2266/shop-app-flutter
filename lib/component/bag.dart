@@ -20,11 +20,11 @@ class Bag extends StatelessWidget {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: color ?? Theme.of(context).colorScheme.secondary),
-              constraints: BoxConstraints(maxHeight: 16, minHeight: 16),
+              constraints: const BoxConstraints(maxHeight: 16, minHeight: 16),
               child: Text(
                 value,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 10),
+                style: const TextStyle(fontSize: 10),
               ),
             ))
       ],
