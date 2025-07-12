@@ -1,4 +1,8 @@
+import 'dart:ffi';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:shop/models/product.dart';
 
 class ProductFormPage extends StatefulWidget {
   const ProductFormPage({super.key});
@@ -13,6 +17,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
   final _imageUrlFocus = FocusNode();
   final _imageUrlController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _formData = Map<String, Object>();
 
   @override
   void initState() {
@@ -35,6 +40,17 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
   void _submitForm() {
     _formKey.currentState?.save();
+    final newProduct = Product(
+        id: Random().nextDouble().toString(),
+        name: _formData['name'] as String,
+        description: _formData['description'] as String,
+        price: _formData['price'] as double,
+        imageUrl: _formData['imageUrl'] as String);
+    print(newProduct.id);
+    print(newProduct.name);
+    print(newProduct.description);
+    print(newProduct.price);
+    print(newProduct.imageUrl);
   }
 
   @override
@@ -50,68 +66,67 @@ class _ProductFormPageState extends State<ProductFormPage> {
         padding: const EdgeInsets.all(15.0),
         child: Form(
           key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Form(
-              child: ListView(
+          child: ListView(
+            children: [
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Nome'),
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(_priceFocus);
+                },
+                onSaved: (name) => _formData['name'] = name ?? '',
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Preço'),
+                focusNode: _priceFocus,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(_descriptionFocus);
+                },
+                onSaved: (price) =>
+                    _formData['price'] = double.parse(price ?? "0"),
+              ),
+              TextFormField(
+                  decoration: const InputDecoration(labelText: 'Descrição'),
+                  focusNode: _descriptionFocus,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 3,
+                  onSaved: (description) =>
+                      _formData['description'] = description ?? ''),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Nome'),
-                    textInputAction: TextInputAction.next,
-                    onFieldSubmitted: (_) {
-                      FocusScope.of(context).requestFocus(_priceFocus);
-                    },
-                    onSaved: (name) => print("nome.... ${name ?? ''}"),
+                  Expanded(
+                    child: TextFormField(
+                        decoration:
+                            const InputDecoration(labelText: 'Url da Imagem'),
+                        focusNode: _imageUrlFocus,
+                        controller: _imageUrlController,
+                        keyboardType: TextInputType.url,
+                        textInputAction: TextInputAction.done,
+                        onFieldSubmitted: (_) => _submitForm(),
+                        onSaved: (imageUrl) =>
+                            _formData['imageUrl'] = imageUrl ?? ''),
                   ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Preço'),
-                    focusNode: _priceFocus,
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
-                    onFieldSubmitted: (_) {
-                      FocusScope.of(context).requestFocus(_descriptionFocus);
-                    },
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Descrição'),
-                    focusNode: _descriptionFocus,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 3,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          decoration:
-                              const InputDecoration(labelText: 'Url da Imagem'),
-                          focusNode: _imageUrlFocus,
-                          controller: _imageUrlController,
-                          keyboardType: TextInputType.url,
-                          textInputAction: TextInputAction.done,
-                          onFieldSubmitted: (_) => _submitForm(),
-                        ),
-                      ),
-                      Container(
-                        height: 100,
-                        width: 100,
-                        margin: const EdgeInsets.only(top: 10, left: 10),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.green, width: 1),
-                        ),
-                        alignment: Alignment.center,
-                        child: _imageUrlController.text.isEmpty
-                            ? const Text('Informe a Url')
-                            : FittedBox(
-                                fit: BoxFit.cover,
-                                child: Image.network(_imageUrlController.text),
-                              ),
-                      )
-                    ],
-                  ),
+                  Container(
+                    height: 100,
+                    width: 100,
+                    margin: const EdgeInsets.only(top: 10, left: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.green, width: 1),
+                    ),
+                    alignment: Alignment.center,
+                    child: _imageUrlController.text.isEmpty
+                        ? const Text('Informe a Url')
+                        : FittedBox(
+                            fit: BoxFit.cover,
+                            child: Image.network(_imageUrlController.text),
+                          ),
+                  )
                 ],
               ),
-            ),
+            ],
           ),
         ),
       ),

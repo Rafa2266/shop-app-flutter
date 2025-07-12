@@ -28,7 +28,7 @@ class ProductsPage extends StatelessWidget {
         child: ListView.builder(
           itemCount: products.itemsCount,
           itemBuilder: (ctx, i) => Column(
-            children: [ProductItem(products.items[i]), Divider()],
+            children: [ProductItem(products.items[i]), const Divider()],
           ),
         ),
       ),
