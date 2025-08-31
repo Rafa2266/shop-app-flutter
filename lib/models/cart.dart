@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:shop/models/cart_item.dart';
 import 'package:shop/models/product.dart';
@@ -12,7 +11,42 @@ class Cart with ChangeNotifier {
   }
 
   int get itemsCount {
-    return _items.length;
+    return items.length;
+  }
+
+  double get totalAmount {
+    double total = 0.0;
+    _items.forEach((key, cartItem) {
+      total += cartItem.price * cartItem.quantity;
+    });
+    return total;
+  }
+
+  void addItem(Product product) {
+    if (_items.containsKey(product.id)) {
+      _items.update(
+        product.id,
+        (existingItem) => CartItem(
+          id: existingItem.id,
+          productId: existingItem.productId,
+          name: existingItem.name,
+          quantity: existingItem.quantity + 1,
+          price: existingItem.price,
+        ),
+      );
+    } else {
+      _items.putIfAbsent(
+        product.id,
+        () => CartItem(
+          id: Random().nextDouble().toString(),
+          productId: product.id,
+          name: product.name,
+          quantity: 1,
+          price: product.price,
+        ),
+      );
+    }
+    notifyListeners();
   }
 
   void removeItem(String productId) {
@@ -25,17 +59,19 @@ class Cart with ChangeNotifier {
       return;
     }
 
-    if ((_items[productId]?.quantity ?? 0) <= 1) {
+    if (_items[productId]?.quantity == 1) {
       _items.remove(productId);
     } else {
       _items.update(
-          productId,
-          (existing) => CartItem(
-              id: existing.id,
-              productId: existing.productId,
-              name: existing.name,
-              quantity: existing.quantity - 1,
-              price: existing.price));
+        productId,
+        (existingItem) => CartItem(
+          id: existingItem.id,
+          productId: existingItem.productId,
+          name: existingItem.name,
+          quantity: existingItem.quantity - 1,
+          price: existingItem.price,
+        ),
+      );
     }
     notifyListeners();
   }
@@ -43,36 +79,5 @@ class Cart with ChangeNotifier {
   void clear() {
     _items = {};
     notifyListeners();
-  }
-
-  void addItem(Product product) {
-    if (_items.containsKey(product.id)) {
-      _items.update(
-          product.id,
-          (existing) => CartItem(
-              id: existing.id,
-              productId: existing.productId,
-              name: existing.name,
-              quantity: existing.quantity + 1,
-              price: existing.price));
-    } else {
-      _items.addAll({
-        product.id: CartItem(
-            id: Random().nextDouble().toString(),
-            productId: product.id,
-            name: product.name,
-            quantity: 1,
-            price: product.price)
-      });
-    }
-    notifyListeners();
-  }
-
-  double get totalAmount {
-    double total = 0.0;
-    _items.forEach((key, value) {
-      total += value.price * value.quantity;
-    });
-    return total;
   }
 }
