@@ -9,7 +9,7 @@ final dummyProducts = [
     imageUrl:
         'https://cdn.pixabay.com/photo/2016/10/02/22/17/red-t-shirt-1710578_1280.jpg',
   ),
-  Product(
+  /*Product(
     id: 'p2',
     name: 'Trousers',
     description: 'A nice pair of trousers.',
@@ -31,5 +31,5 @@ final dummyProducts = [
     price: 49.99,
     imageUrl:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
-  ),
+  ), */
 ];
