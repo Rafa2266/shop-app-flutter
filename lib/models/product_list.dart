@@ -88,7 +88,7 @@ class ProductList with ChangeNotifier {
     int index = _items.indexWhere((p) => p.id == product.id);
 
     if (index >= 0) {
-      final response = await http.patch(
+      await http.patch(
         Uri.parse('$_url/${product.id}.json'),
         body: jsonEncode(
           {
