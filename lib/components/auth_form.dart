@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/exceptions/auth_exception.dart';
@@ -19,7 +17,7 @@ class _AuthFormState extends State<AuthForm> {
   final _formkey = GlobalKey<FormState>();
   bool _isLoading = false;
   AuthMode _authMode = AuthMode.login;
-  Map<String, String> _authData = {'email': '', 'password': ''};
+  final Map<String, String> _authData = {'email': '', 'password': ''};
 
   bool _isLogin() => _authMode == AuthMode.login;
 
