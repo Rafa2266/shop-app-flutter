@@ -52,7 +52,7 @@ class Auth with ChangeNotifier {
           DateTime.now().add(Duration(seconds: int.parse(body['expiresIn'])));
       notifyListeners();
     }
-    print(body);
+    //print(body);
   }
 
   Future<void> signup(String email, String password) async {

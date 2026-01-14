@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:shop/exceptions/http_exception.dart';
@@ -26,15 +27,13 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleFavorite(String token) async {
+  Future<void> toggleFavorite(String token, String userId) async {
     _changeFavorite();
-    const url = Constants.productBaseUrl;
-    final response = await http.patch(
-      Uri.parse('$url/$id.json?auth=$token'),
+    const url = Constants.userFavoritesUrl;
+    final response = await http.put(
+      Uri.parse('$url/$userId/$id.json?auth=$token'),
       body: jsonEncode(
-        {
-          "isFavorite": isFavorite,
-        },
+        isFavorite,
       ),
     );
     if (response.statusCode >= 400) {
