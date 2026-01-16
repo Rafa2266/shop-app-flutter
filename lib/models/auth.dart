@@ -8,10 +8,10 @@ class Auth with ChangeNotifier {
   String? _token;
   String? _email;
   String? _uid;
-  DateTime? expireDate;
+  DateTime? _expireDate;
 
   bool get isAuth {
-    final isValid = expireDate?.isAfter(DateTime.now()) ?? false;
+    final isValid = _expireDate?.isAfter(DateTime.now()) ?? false;
     return _token != null && isValid;
   }
 
@@ -48,7 +48,7 @@ class Auth with ChangeNotifier {
       _token = body['idToken'];
       _email = body['email'];
       _uid = body['localId'];
-      expireDate =
+      _expireDate =
           DateTime.now().add(Duration(seconds: int.parse(body['expiresIn'])));
       notifyListeners();
     }
@@ -61,5 +61,13 @@ class Auth with ChangeNotifier {
 
   Future<void> login(String email, String password) async {
     return _authenticate(email, password, 'signInWithPassword');
+  }
+
+  void logout() {
+    _token = null;
+    _email = null;
+    _uid = null;
+    _expireDate = null;
+    notifyListeners();
   }
 }
