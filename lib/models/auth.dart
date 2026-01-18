@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop/data/store.dart';
 import 'package:shop/exceptions/auth_exception.dart';
 
 class Auth with ChangeNotifier {
@@ -52,10 +53,16 @@ class Auth with ChangeNotifier {
       _uid = body['localId'];
       _expireDate =
           DateTime.now().add(Duration(seconds: int.parse(body['expiresIn'])));
+
+      Store.saveMap('userData', {
+        'token': _token,
+        'email': _email,
+        'userId': _uid,
+        'expireDate': _expireDate!.toIso8601String(),
+      });
       _autologout();
       notifyListeners();
     }
-    //print(body);
   }
 
   Future<void> signup(String email, String password) async {
@@ -66,13 +73,32 @@ class Auth with ChangeNotifier {
     return _authenticate(email, password, 'signInWithPassword');
   }
 
+  Future<void> tryAutoLogin() async {
+    if (isAuth) return;
+
+    final userData = await Store.getMap('userData');
+
+    if (userData.isEmpty) return;
+
+    final expireDate = DateTime.parse(userData['expireDate']);
+    if (expireDate.isBefore(DateTime.now())) return;
+
+    _token = userData['token'];
+    _email = userData['email'];
+    _email = userData['email'];
+    _uid = userData['userId'];
+    _expireDate = expireDate;
+    _autologout();
+    notifyListeners();
+  }
+
   void logout() {
     _token = null;
     _email = null;
     _uid = null;
     _expireDate = null;
     _clearLogoutTimer();
-    notifyListeners();
+    Store.remove('userData').then((_) => notifyListeners());
   }
 
   void _clearLogoutTimer() {
