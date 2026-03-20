@@ -22,22 +22,17 @@ class ProductGridItem extends StatelessWidget {
           leading: IconButton(
             onPressed: () async {
               try {
-                await product.toggleFavorite(
-                  auth.token ?? '',
-                  auth.uid ?? '',
-                );
+                await product.toggleFavorite(auth.token ?? '', auth.uid ?? '');
               } catch (error) {
                 msg.showSnackBar(SnackBar(content: Text(error.toString())));
               }
             },
             icon: Icon(
-                product.isFavorite ? Icons.favorite : Icons.favorite_border),
+              product.isFavorite ? Icons.favorite : Icons.favorite_border,
+            ),
             color: Theme.of(context).colorScheme.secondary,
           ),
-          title: Text(
-            product.name,
-            textAlign: TextAlign.center,
-          ),
+          title: Text(product.name, textAlign: TextAlign.center),
           trailing: IconButton(
             icon: const Icon(Icons.shopping_cart),
             color: Theme.of(context).colorScheme.secondary,
@@ -60,15 +55,22 @@ class ProductGridItem extends StatelessWidget {
           ),
         ),
         child: GestureDetector(
-          child: Image.network(
+          child: Hero(
+            tag: product.id,
+            child: FadeInImage(
+              placeholder: AssetImage('assets/images/product-placeholder.png'),
+              image: NetworkImage(product.imageUrl),
+              fit: BoxFit.cover,
+            ),
+          ),
+          /* child: Image.network(
             product.imageUrl,
             fit: BoxFit.cover,
-          ),
+          ), */
           onTap: () {
-            Navigator.of(context).pushNamed(
-              AppRoutes.productDetail,
-              arguments: product,
-            );
+            Navigator.of(
+              context,
+            ).pushNamed(AppRoutes.productDetail, arguments: product);
           },
         ),
       ),
